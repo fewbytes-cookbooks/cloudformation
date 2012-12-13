@@ -8,6 +8,7 @@ action :signal do
                 new_resource.unique_id.call
               else
                 new_resource.unique_id.to_s
+              end
 
   req = ::Net::HTTP::Put.new(new_resource.url)
   req.content_type = ""
