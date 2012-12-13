@@ -8,3 +8,4 @@ version          "0.0.1"
 
 depends          "chef_handler"
 depends          "ohai"
+depends          "xml", "~> 1.1.0"
