@@ -1,5 +1,7 @@
 require 'net/http'
 require 'uri'
+require 'chef'
+
 module Fewbytes
   module Chef
     module Handlers
@@ -22,7 +24,7 @@ module Fewbytes
         end
 
         def report
-          url = URI.new(@signal_url)
+          url = URI.parse(@signal_url)
           if run_satus.success? 
             status = "SUCCESS"
             data = report_data
