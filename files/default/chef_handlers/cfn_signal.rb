@@ -25,7 +25,7 @@ module Fewbytes
 
         def report
           url = URI.parse(@signal_url)
-          if run_satus.success? 
+          if run_status.success? 
             status = "SUCCESS"
             data = report_data
             reason = "Chef run has completed successfully"
