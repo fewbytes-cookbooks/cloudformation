@@ -6,5 +6,6 @@ chef_gem "aws-sdk"
 include_recipe 'ohai'
 inlcude_recipe 'chef_handler'
 cookbook_file ::File.join(node["chef_handler"]["handler_path"], "cfn_signal.rb") do
+  source "chef_handlers/cfn_signal.rb"
   mode "0644"
 end
