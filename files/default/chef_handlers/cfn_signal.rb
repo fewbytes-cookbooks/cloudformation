@@ -13,6 +13,7 @@ module Fewbytes
           @signal_url = opts[:url]
           @report_data = opts[:data]
           @unique_id = opts[:unique_id] || hash
+          @signal_once = opts[:signal_once] || false
         end
 
         def report_data
@@ -42,6 +43,7 @@ module Fewbytes
           req.content_type = ""
 
           req.body = JsonCompat.to_json({"Status" => status, "UniqueId" => unique_id.to_s, "Reason" => reason, "Data" => data})
+          return if signal_once? and run_status.node.default["cloudformation"]["sent_signals"].include? url.to_s
           begin
             Net::HTTP.start(url.host, url.port) do |http|
               http.request(req)
@@ -49,6 +51,14 @@ module Fewbytes
           rescue Exception => e
             Chef::Log.warn "Failed to signal CloudFormation, reason: #{e.inspect}"
           end
+          if signal_once?
+            run_status.node.default["cloudformation"]["sent_signals"] << url.to_s
+          end
+        end
+        
+        private
+        def signal_once?
+          @signal_once
         end
       end
     end
