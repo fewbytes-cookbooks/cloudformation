@@ -42,7 +42,7 @@ module Fewbytes
           req = ::Net::HTTP::Put.new(url.request_uri)
           req.content_type = ""
 
-          req.body = JsonCompat.to_json({"Status" => status, "UniqueId" => unique_id.to_s, "Reason" => reason, "Data" => data})
+          req.body = {"Status" => status, "UniqueId" => unique_id.to_s, "Reason" => reason, "Data" => data}.to_json
           if signal_once? and run_status.node.default["cloudformation"]["sent_signals"].include? url.to_s
             Chef::Log.info "Not signaling because CloudFormation signal #{new_resource.name} has alredy been sent and `once` is true"
             return
