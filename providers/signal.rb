@@ -20,7 +20,7 @@ action :signal do
         else
           URI.parse(new_resource.url)
         end
-  req = ::Net::HTTP::Put.new(url)
+  req = ::Net::HTTP::Put.new(url.request_uri)
   req.content_type = ""
   
   req.body = JsonCompat.to_json({"Status" => status, "UniqueId" => unique_id, "Reason" => new_resource.reason, "Data" => new_resource.data})

@@ -39,7 +39,7 @@ module Fewbytes
         end
 
         def signal(url, status, reason, data)
-          req = ::Net::HTTP::Put.new(url)
+          req = ::Net::HTTP::Put.new(url.request_uri)
           req.content_type = ""
 
           req.body = JsonCompat.to_json({"Status" => status, "UniqueId" => unique_id.to_s, "Reason" => reason, "Data" => data})
