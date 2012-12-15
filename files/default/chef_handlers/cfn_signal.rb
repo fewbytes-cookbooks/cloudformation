@@ -11,7 +11,7 @@ module Fewbytes
           raise ArgumentError, "Arguments must be a hash with keys :url, :unique_id, :data - :url is required." \
             unless opts.is_a? Hash and opts.keys.include?(:url)
           @signal_url = opts[:url]
-          @report_data = opts[:data]
+          @report_data = opts[:data] || "NO DATA"
           @unique_id = opts[:unique_id] || hash
           @signal_once = opts[:once] || false
         end
