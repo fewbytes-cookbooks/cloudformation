@@ -48,8 +48,13 @@ module Fewbytes
             return
           end
           begin
-            Net::HTTP.start(url.host, url.port) do |http|
+            http = Net::HTTP.new(url.host, url.port)
+            http.use_ssl = true if url.scheme = "https"
+            resp = http.start do |http|
               http.request(req)
+            end
+            unless resp.code_type == Net::HTTPOK
+              ::Chef::Log.warn "CloudFormation API returned #{resp.code}, reason #{resp.body}"
             end
           rescue Exception => e
             ::Chef::Log.warn "Failed to signal CloudFormation, reason: #{e.inspect}"

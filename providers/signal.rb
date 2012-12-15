@@ -25,15 +25,19 @@ action :signal do
   
   req.body = JsonCompat.to_json({"Status" => status, "UniqueId" => unique_id, "Reason" => new_resource.reason, "Data" => new_resource.data})
   begin
-    Net::HTTP.start(url.host, url.port) do |http|
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true if url.scheme = "https"
+    resp = http.start do |http|
       http.request(req)
     end
-    if new_resource.once
-      node.default["cloudformation"]["sent_signals"] << new_resource.url
+    unless resp.code_type == Net::HTTPOK
+      ::Chef::Log.warn "CloudFormation API returned #{resp.code}, reason #{resp.body}"
+      raise RuntimeError, "HTTP request returned status: #{resp.code}"
     end
+    node.default["cloudformation"]["sent_signals"] << new_resource.url.to_s unless node["cloudformation"]["sent_signals"].include? new_resource.url.to_s
     new_resource.updated_by_last_action true
   rescue Exception => e
-    Chef::Log.warn "Failed to signal CloudFormation, reason: #{e.inspect}"
+    Chef::Log.warn "Failed to signal CloudFormation, reason: #{e}"
     raise e
   end
 end
