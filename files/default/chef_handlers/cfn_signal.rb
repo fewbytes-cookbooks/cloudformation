@@ -13,7 +13,7 @@ module Fewbytes
           @signal_url = opts[:url]
           @report_data = opts[:data]
           @unique_id = opts[:unique_id] || hash
-          @signal_once = opts[:signal_once] || false
+          @signal_once = opts[:once] || false
         end
 
         def report_data
@@ -43,7 +43,10 @@ module Fewbytes
           req.content_type = ""
 
           req.body = JsonCompat.to_json({"Status" => status, "UniqueId" => unique_id.to_s, "Reason" => reason, "Data" => data})
-          return if signal_once? and run_status.node.default["cloudformation"]["sent_signals"].include? url.to_s
+          if signal_once? and run_status.node.default["cloudformation"]["sent_signals"].include? url.to_s
+            Chef::Log.info "Not signaling because CloudFormation signal #{new_resource.name} has alredy been sent and `once` is true"
+            return
+          end
           begin
             Net::HTTP.start(url.host, url.port) do |http|
               http.request(req)

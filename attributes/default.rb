@@ -1,3 +1,5 @@
 include_attribute "ohai"
 
-node.default["ohai"]["plugins"]["cloudformation"] = "ohai_plugins"
+default["ohai"]["plugins"]["cloudformation"] = "ohai_plugins"
+
+default["cloudformation"]["sent_signals"] = []
