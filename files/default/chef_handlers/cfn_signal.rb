@@ -43,7 +43,7 @@ module Fewbytes
           req.content_type = ""
 
           req.body = {"Status" => status, "UniqueId" => unique_id.to_s, "Reason" => reason, "Data" => data}.to_json
-          if signal_once? and run_status.node.default["cloudformation"]["sent_signals"].include? url.to_s
+          if signal_once? and run_status.node.set["cloudformation"]["sent_signals"].include? url.to_s
             ::Chef::Log.info "Not signaling because CloudFormation signal #{new_resource.name} has alredy been sent and `once` is true"
             return
           end
@@ -60,7 +60,7 @@ module Fewbytes
             ::Chef::Log.warn "Failed to signal CloudFormation, reason: #{e.inspect}"
           end
           if signal_once?
-            run_status.node.default["cloudformation"]["sent_signals"] << url.to_s
+            run_status.node.set["cloudformation"]["sent_signals"] << url.to_s
           end
         end
         

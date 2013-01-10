@@ -34,7 +34,7 @@ action :signal do
       ::Chef::Log.warn "CloudFormation API returned #{resp.code}, reason #{resp.body}"
       raise RuntimeError, "HTTP request returned status: #{resp.code}"
     end
-    node.default["cloudformation"]["sent_signals"] << new_resource.url.to_s unless node["cloudformation"]["sent_signals"].include? new_resource.url.to_s
+    node.set["cloudformation"]["sent_signals"] << new_resource.url.to_s unless node["cloudformation"]["sent_signals"].include? new_resource.url.to_s
     new_resource.updated_by_last_action true
   rescue Exception => e
     Chef::Log.warn "Failed to signal CloudFormation, reason: #{e}"
