@@ -4,7 +4,7 @@ require 'open-uri'
 EC2_METADATA_URL = "http://169.254.169.254/latest/meta-data"
 provides "cloudformation"
 
-aws_region = open(EC2_METADATA_URL + "/placement/availability-zone").read[/([a-z]{2}-(?:west|east|north|south)-\d)[a-z]/,1]
+aws_region = open(EC2_METADATA_URL + "/placement/availability-zone").read[/([a-z]{2}-(?:west|east|north|south)(east|west)?-\d)[a-z]/,1]
 instance_id = open(EC2_METADATA_URL + "/instance-id").read
 
 cfn = AWS::CloudFormation.new(
