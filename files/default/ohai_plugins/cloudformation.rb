@@ -14,12 +14,13 @@ ec2_conn = AWS::EC2.new.regions[aws_region]
 instance_tags = ec2_conn.instances[instance_id].tags
 stack_name = instance_tags["aws:cloudformation:stack-name"]
 resource_id = instance_tags["aws:cloudformation:logical-id"]
-stack = cfn.stacks[stack_name]
-resource = stack.resources[resource_id]
 cloudformation Mash.new
 begin
-  cloudformation["metadata"] = @json_parser.parse(resource.metadata)
-rescue
+  stack = cfn.stacks[stack_name]
+  resource = stack.resources[resource_id]
+  cloudformation["metadata"] = Yajl::Parser.new.parse(resource.metadata)
+rescue Exception => e
+  Ohai::Log.warn "Failed to fetch metadata from CloudFormation: #{e}"
 end
 cloudformation["resource_id"] = resource.logical_resource_id
 cloudformation["resource_type"] = resource.resource_type
